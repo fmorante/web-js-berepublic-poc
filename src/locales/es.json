@@ -1,0 +1,6 @@
+{
+	"Server running at port 3000.": "Servidor corriendo en el puerto 3000.",
+	"Issue with MySQL: ": "Problema con MySQL: ",
+	"Connection has been established successfully.": "Conexión a base de datos establecida satisfactoriamente.",
+	"Unable to connect to the database: ": "No es posible conectar con la base de datos: "
+}

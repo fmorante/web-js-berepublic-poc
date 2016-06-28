@@ -1,0 +1,19 @@
+{
+  "database": {
+    "host": "localhost",
+    "db": "JD",
+    "user": "root",
+    "password": "",
+    "debug": false,
+    "connectionLimit": 100,
+    "port": 3306
+  },
+  "logger": {
+    "mode": "DEBUG",
+    "file": "log/ServerPROD.log"
+  },
+  "api": {
+    "uri": "/api/v",
+    "version": "1.0"
+  }
+}
