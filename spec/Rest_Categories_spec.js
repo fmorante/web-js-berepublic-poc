@@ -1,5 +1,6 @@
 var frisby = require('frisby');
 var URL = 'http://localhost:3000/api/v1.0';
+var item = 0;
 
 
 frisby.globalSetup({ // globalSetup is for ALL requests 
@@ -21,7 +22,8 @@ frisby.create('GET categories')
     .expectHeaderContains('content-type', 'application/json')
     .expectJSONTypes({
         Error: Boolean,
-        Message: String
+        Message: String,
+        Categories: Array
     })
     .expectJSON({
         Error: false,
@@ -29,8 +31,8 @@ frisby.create('GET categories')
     })
     .toss();
 
-frisby.create('POST & UPDATE & DELETE single category')
 // test POST /categories
+frisby.create('POST category')
     .post(URL + '/categories' , {
         slug: "slug-test-jasmine",
         name: "name-test-jasmine"
@@ -39,49 +41,24 @@ frisby.create('POST & UPDATE & DELETE single category')
     .expectHeaderContains('content-type', 'application/json')
     .expectJSONTypes({
         Error: Boolean,
-        Message: String
+        Message: String,
+        Id: Number
     })
     .expectJSON({
         Error: false,
         Message: 'Success'
     })
     .afterJSON (function (response) {
-        // test PUT /categories/:id
-        frisby.create('UPDATE categories')
-            .put(URL + '/categories/' + response.Id, {
-                slug: "slug-test-jasmine-update",
-                name: "name-test-jasmine-update"
-            })
-            .expectStatus(200)
-            .expectHeaderContains('content-type', 'application/json')
-            .expectJSONTypes({
-                Error: Boolean,
-                Message: String
-            })
-            .expectJSON({
-                Error: false,
-                Message: 'Success'
-            })
-            .toss();
-        // test DELETE /categories/:id
-        frisby.create('DELETE categories')
-            .delete(URL + '/categories/' + response.Id)
-            .expectStatus(200)
-            .expectHeaderContains('content-type', 'application/json')
-            .expectJSONTypes({
-                Error: Boolean,
-                Message: String
-            })
-            .expectJSON({
-                Error: false,
-                Message: 'Success'
-            })
-            .toss();
+        item = response.Id;
     })
     .toss();
 
-frisby.create('GET posts')
-    .get(URL + '/posts')
+// test PUT /categories/:id
+frisby.create('PUT categories')
+    .put(URL + '/categories/' + item, {
+        slug: "slug-test-jasmine-update",
+        name: "name-test-jasmine-update"
+    })
     .expectStatus(200)
     .expectHeaderContains('content-type', 'application/json')
     .expectJSONTypes({
@@ -92,58 +69,98 @@ frisby.create('GET posts')
         Error: false,
         Message: 'Success'
     })
+    .toss();
+
+// test DELETE /categories/:id
+frisby.create('DELETE categories')
+    .delete(URL + '/categories/' + item)
+    .expectStatus(200)
+    .expectHeaderContains('content-type', 'application/json')
+    .expectJSONTypes({
+        Error: Boolean,
+        Message: String
+    })
+    .expectJSON({
+        Error: false,
+        Message: 'Success'
+    })
+    .toss();
+
+
+frisby.create('GET posts')
+    .get(URL + '/posts')
+    .expectStatus(200)
+    .expectHeaderContains('content-type', 'application/json')
+    .expectJSONTypes({
+        Error: Boolean,
+        Message: String,
+        Posts: Array
+    })
+    .expectJSON({
+        Error: false,
+        Message: 'Success'
+    })
     .afterJSON (function (response){
-        frisby.create('GET single post')
-            .get(URL + '/posts/' + response.Posts[0].id)
-            .expectStatus(200)
-            .expectHeaderContains('content-type', 'application/json')
-            .expectJSONTypes({
-                Error: Boolean,
-                Message: String
-            })
-            .expectJSON({
-                Error: false,
-                Message: 'Success'
-            })
-        .toss();
-        frisby.create('GET post related categories')
-            .get(URL + '/posts/' + response.Posts[0].id + '/categories')
-            .expectStatus(200)
-            .expectHeaderContains('content-type', 'application/json')
-            .expectJSONTypes({
-                Error: Boolean,
-                Message: String
-            })
-            .expectJSON({
-                Error: false,
-                Message: 'Success'
-            })
-            .toss();
-        frisby.create('GET post related media')
-            .get(URL + '/posts/' + response.Posts[0].id + '/medias')
-            .expectStatus(200)
-            .expectHeaderContains('content-type', 'application/json')
-            .expectJSONTypes({
-                Error: Boolean,
-                Message: String
-            })
-            .expectJSON({
-                Error: false,
-                Message: 'Success'
-            })
-            .toss();
-        frisby.create('GET post related tags')
-            .get(URL + '/posts/' + response.Posts[0].id + '/tags')
-            .expectStatus(200)
-            .expectHeaderContains('content-type', 'application/json')
-            .expectJSONTypes({
-                Error: Boolean,
-                Message: String
-            })
-            .expectJSON({
-                Error: false,
-                Message: 'Success'
-            })
-            .toss();
+    item = response.Posts[0].id;
+    })
+    .toss();
+
+frisby.create('GET single post')
+    .get(URL + '/posts/' + item)
+    .expectStatus(200)
+    .expectHeaderContains('content-type', 'application/json')
+    .expectJSONTypes({
+        Error: Boolean,
+        Message: String,
+        Post: Array
+    })
+    .expectJSON({
+        Error: false,
+        Message: 'Success'
+    })
+.toss();
+
+frisby.create('GET post related categories')
+    .get(URL + '/posts/' + item + '/categories')
+    .expectStatus(200)
+    .expectHeaderContains('content-type', 'application/json')
+    .expectJSONTypes({
+        Error: Boolean,
+        Message: String,
+        Categories: Array
+    })
+    .expectJSON({
+        Error: false,
+        Message: 'Success'
+    })
+    .toss();
+
+frisby.create('GET post related media')
+    .get(URL + '/posts/' + item + '/medias')
+    .expectStatus(200)
+    .expectHeaderContains('content-type', 'application/json')
+    .expectJSONTypes({
+        Error: Boolean,
+        Message: String,
+        Medias: Array
+    })
+    .expectJSON({
+        Error: false,
+        Message: 'Success'
+    })
+    .toss();
+
+frisby.create('GET post related tags')
+    .get(URL + '/posts/' + item + '/tags')
+    .expectStatus(200)
+    .expectHeaderContains('content-type', 'application/json')
+    .expectJSONTypes({
+        Error: Boolean,
+        Message: String,
+        Tags: Array
+    })
+    .expectJSON({
+        Error: false,
+        Message: 'Success'
     })
     .toss();
