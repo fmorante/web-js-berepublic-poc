@@ -25,12 +25,12 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
    * @apiError {String} Message Error message
    * @apiSuccess {Boolean} Error false
    * @apiSuccess {String} Message "Success"
-   * @apiSuccess {Array} Category categories array
+   * @apiSuccess {Array} Categories categories array
    * @apiSuccessExample Success-Response:
    * {
    *  "Error": false,
    *  "Message": "Success",
-   *  "Category": [
+   *  "Categories": [
    *    {
    *      "id": 1,
    *      "slug": "slug-example-1",
@@ -54,7 +54,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
     connection
         .query(query, { type: sequelize.QueryTypes.SELECT })
         .then(function(rows){
-          res.json({"Error" : false, "Message" : "Success", "Category" : rows});
+          res.json({"Error" : false, "Message" : "Success", "Categories" : rows});
         })
         .catch(function(err){
           res.json({"Error" : true, "Message" : err});
