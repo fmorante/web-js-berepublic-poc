@@ -14,9 +14,22 @@ var config = require("config");
 var rest = require("./Rest.js");
 // requires ORM
 var Sequelize = require('sequelize');
+// Authentication module.
+var auth = require('http-auth');
 
+
+// Authentication parameters
+var basic = auth.basic({
+      realm: "JD_API"
+    }, function (username, password, callback) {
+      // Custom authentication
+      // Use callback(error) if you want to throw async error.
+      callback(username === "fmorante" && password === "fmorante");
+    }
+);
 
 var app  = express();
+app.use(auth.connect(basic));
 
 // localization
 i18n.configure({

@@ -4,7 +4,7 @@ var URL = 'http://localhost:3000/api/v1.0';
 
 frisby.globalSetup({ // globalSetup is for ALL requests 
   request: {
-    headers: { 'X-Auth-Token': 'fa8426a0-8eaf-4d22-8e13-7c1b16a9370c' }
+    headers: { 'Authorization': 'Basic Zm1vcmFudGU6Zm1vcmFudGU=' }
   }
 });
 
@@ -48,7 +48,7 @@ frisby.create('POST & UPDATE & DELETE single category')
     .afterJSON (function (response) {
         // test PUT /categories/:id
         frisby.create('UPDATE categories')
-            .put(URL + '/categories/' + response.Category.insertId, {
+            .put(URL + '/categories/' + response.Id, {
                 slug: "slug-test-jasmine-update",
                 name: "name-test-jasmine-update"
             })
@@ -65,7 +65,75 @@ frisby.create('POST & UPDATE & DELETE single category')
             .toss();
         // test DELETE /categories/:id
         frisby.create('DELETE categories')
-            .delete(URL + '/categories/' + response.Category.insertId)
+            .delete(URL + '/categories/' + response.Id)
+            .expectStatus(200)
+            .expectHeaderContains('content-type', 'application/json')
+            .expectJSONTypes({
+                Error: Boolean,
+                Message: String
+            })
+            .expectJSON({
+                Error: false,
+                Message: 'Success'
+            })
+            .toss();
+    })
+    .toss();
+
+frisby.create('GET posts')
+    .get(URL + '/posts')
+    .expectStatus(200)
+    .expectHeaderContains('content-type', 'application/json')
+    .expectJSONTypes({
+        Error: Boolean,
+        Message: String
+    })
+    .expectJSON({
+        Error: false,
+        Message: 'Success'
+    })
+    .afterJSON (function (response){
+        frisby.create('GET single post')
+            .get(URL + '/posts/' + response.Posts[0].id)
+            .expectStatus(200)
+            .expectHeaderContains('content-type', 'application/json')
+            .expectJSONTypes({
+                Error: Boolean,
+                Message: String
+            })
+            .expectJSON({
+                Error: false,
+                Message: 'Success'
+            })
+        .toss();
+        frisby.create('GET post related categories')
+            .get(URL + '/posts/' + response.Posts[0].id + '/categories')
+            .expectStatus(200)
+            .expectHeaderContains('content-type', 'application/json')
+            .expectJSONTypes({
+                Error: Boolean,
+                Message: String
+            })
+            .expectJSON({
+                Error: false,
+                Message: 'Success'
+            })
+            .toss();
+        frisby.create('GET post related media')
+            .get(URL + '/posts/' + response.Posts[0].id + '/medias')
+            .expectStatus(200)
+            .expectHeaderContains('content-type', 'application/json')
+            .expectJSONTypes({
+                Error: Boolean,
+                Message: String
+            })
+            .expectJSON({
+                Error: false,
+                Message: 'Success'
+            })
+            .toss();
+        frisby.create('GET post related tags')
+            .get(URL + '/posts/' + response.Posts[0].id + '/tags')
             .expectStatus(200)
             .expectHeaderContains('content-type', 'application/json')
             .expectJSONTypes({
