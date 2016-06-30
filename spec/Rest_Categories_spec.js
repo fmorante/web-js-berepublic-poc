@@ -1,7 +1,7 @@
 var frisby = require('frisby');
 var URL = 'http://localhost:3000/api/v1.0';
 var item = 0;
-
+var query = '/?limit=1&offset=0';
 
 frisby.globalSetup({ // globalSetup is for ALL requests 
   request: {
@@ -17,7 +17,7 @@ frisby.create('Server running')
 
 // test GET /categories
 frisby.create('GET categories')
-    .get(URL + '/categories')
+    .get(URL + '/categories' + query)
     .expectStatus(200)
     .expectHeaderContains('content-type', 'application/json')
     .expectJSONTypes({
@@ -88,7 +88,7 @@ frisby.create('DELETE categories')
 
 
 frisby.create('GET posts')
-    .get(URL + '/posts')
+    .get(URL + '/posts' + query)
     .expectStatus(200)
     .expectHeaderContains('content-type', 'application/json')
     .expectJSONTypes({
@@ -121,7 +121,7 @@ frisby.create('GET single post')
 .toss();
 
 frisby.create('GET post related categories')
-    .get(URL + '/posts/' + item + '/categories')
+    .get(URL + '/posts/' + item + '/categories' + query)
     .expectStatus(200)
     .expectHeaderContains('content-type', 'application/json')
     .expectJSONTypes({
@@ -136,7 +136,7 @@ frisby.create('GET post related categories')
     .toss();
 
 frisby.create('GET post related media')
-    .get(URL + '/posts/' + item + '/medias')
+    .get(URL + '/posts/' + item + '/medias' + query)
     .expectStatus(200)
     .expectHeaderContains('content-type', 'application/json')
     .expectJSONTypes({
@@ -151,7 +151,7 @@ frisby.create('GET post related media')
     .toss();
 
 frisby.create('GET post related tags')
-    .get(URL + '/posts/' + item + '/tags')
+    .get(URL + '/posts/' + item + '/tags' + query)
     .expectStatus(200)
     .expectHeaderContains('content-type', 'application/json')
     .expectJSONTypes({

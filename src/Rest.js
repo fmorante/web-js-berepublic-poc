@@ -21,6 +21,8 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
    * @api {get} /categories List all categories
    * @apiVersion 1.0.0
    * @apiGroup Categories
+   * @apiParam Limit limit results
+   * @apiParam Offset offset
    * @apiError {Boolean} Error true
    * @apiError {String} Message Error message
    * @apiSuccess {Boolean} Error false
@@ -50,9 +52,10 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
    */
   router.get("/categories",function(req,res){
 
-    var query = 'SELECT * from category';
+    var query = 'SELECT * from category LIMIT :limit OFFSET :offset';
     connection
-        .query(query, { type: sequelize.QueryTypes.SELECT })
+        .query(query,
+        { replacements: { limit: parseInt(req.query.limit), offset: parseInt(req.query.offset) }, type: sequelize.QueryTypes.SELECT })
         .then(function(rows){
           res.json({"Error" : false, "Message" : "Success", "Categories" : rows});
         })
@@ -153,6 +156,8 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
      * @api {get} /posts List all posts
      * @apiVersion 1.0.0
      * @apiGroup Posts
+     * @apiParam Limit limit results
+     * @apiParam Offset offset
      * @apiError {Boolean} Error true
      * @apiError {String} Message Error message
      * @apiSuccess {Boolean} Error false
@@ -209,9 +214,10 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
      * }
      */
     router.get("/posts",function(req,res){
-        var query = 'SELECT * from post';
+        var query = 'SELECT * from post LIMIT :limit OFFSET :offset';
         connection
-            .query(query, { type: sequelize.QueryTypes.SELECT })
+            .query(query,
+            { replacements: { limit: parseInt(req.query.limit), offset: parseInt(req.query.offset) }, type: sequelize.QueryTypes.SELECT })
             .then(function(rows){
                 res.json({"Error" : false, "Message" : "Success", "Posts" : rows});
             })
@@ -275,6 +281,8 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
      * @api {get} /posts/:id/categories List single post related categories
      * @apiVersion 1.0.0
      * @apiGroup Posts
+     * @apiParam Limit limit results
+     * @apiParam Offset offset
      * @apiError {Boolean} Error true
      * @apiError {String} Message Error message
      * @apiSuccess {Boolean} Error false
@@ -303,10 +311,10 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
      * }
      */
     router.get("/posts/:id/categories",function(req,res){
-        var query = 'SELECT c.* FROM category c, post_has_category h, post p WHERE c.id = h.category_id AND p.id = h.post_id AND p.id = :id';
+        var query = 'SELECT c.* FROM category c, post_has_category h, post p WHERE c.id = h.category_id AND p.id = h.post_id AND p.id = :id LIMIT :limit OFFSET :offset';
         connection
             .query(query,
-            { replacements: { id: req.params.id }, type: sequelize.QueryTypes.SELECT })
+            { replacements: { limit: parseInt(req.query.limit), offset: parseInt(req.query.offset), id: req.params.id }, type: sequelize.QueryTypes.SELECT })
             .then(function(rows){
                 res.json({"Error" : false, "Message" : "Success", "Categories" : rows});
             })
@@ -319,6 +327,8 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
      * @api {get} /posts/:id/medias List single post related medias
      * @apiVersion 1.0.0
      * @apiGroup Posts
+     * @apiParam Limit limit results
+     * @apiParam Offset offset
      * @apiError {Boolean} Error true
      * @apiError {String} Message Error message
      * @apiSuccess {Boolean} Error false
@@ -356,10 +366,10 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
      */
 
     router.get("/posts/:id/medias",function(req,res){
-        var query = 'SELECT m.* FROM post_media m, post p WHERE p.id = m.post_id AND p.id = :id';
+        var query = 'SELECT m.* FROM post_media m, post p WHERE p.id = m.post_id AND p.id = :id LIMIT :limit OFFSET :offset';
         connection
             .query(query,
-            { replacements: { id: req.params.id }, type: sequelize.QueryTypes.SELECT })
+            { replacements: { limit: parseInt(req.query.limit), offset: parseInt(req.query.offset), id: req.params.id }, type: sequelize.QueryTypes.SELECT })
             .then(function(rows){
                 res.json({"Error" : false, "Message" : "Success", "Medias" : rows});
             })
@@ -372,6 +382,8 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
      * @api {get} /posts/:id/tags List single post related tags
      * @apiVersion 1.0.0
      * @apiGroup Posts
+     * @apiParam Limit limit results
+     * @apiParam Offset offset
      * @apiError {Boolean} Error true
      * @apiError {String} Message Error message
      * @apiSuccess {Boolean} Error false
@@ -399,10 +411,10 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
      */
 
     router.get("/posts/:id/tags",function(req,res){
-        var query = 'SELECT t.* FROM tag t, post_has_tag h, post p WHERE t.id = h.tag_id AND p.id = h.post_id AND p.id = :id';
+        var query = 'SELECT t.* FROM tag t, post_has_tag h, post p WHERE t.id = h.tag_id AND p.id = h.post_id AND p.id = :id LIMIT :limit OFFSET :offset';
         connection
             .query(query,
-            { replacements: { id: req.params.id }, type: sequelize.QueryTypes.SELECT })
+            { replacements: { limit: parseInt(req.query.limit), offset: parseInt(req.query.offset), id: req.params.id }, type: sequelize.QueryTypes.SELECT })
             .then(function(rows){
                 res.json({"Error" : false, "Message" : "Success", "Tags" : rows});
             })
@@ -410,9 +422,6 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
                 res.json({"Error" : true, "Message" : err});
             });
     });
-
-
-
 
 }
 
